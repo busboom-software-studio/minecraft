@@ -1,0 +1,28 @@
+{
+  "stats": {
+    "minecraft:picked_up": {
+      "minecraft:emerald_block": 1
+    },
+    "minecraft:dropped": {
+      "minecraft:emerald_block": 1
+    },
+    "minecraft:used": {
+      "minecraft:emerald_block": 280,
+      "minecraft:beacon": 2
+    },
+    "minecraft:custom": {
+      "minecraft:sprint_one_cm": 10,
+      "minecraft:time_since_rest": 22461,
+      "minecraft:walk_one_cm": 3007,
+      "minecraft:total_world_time": 22461,
+      "minecraft:fly_one_cm": 10063,
+      "minecraft:play_time": 22461,
+      "minecraft:damage_dealt": 144,
+      "minecraft:interact_with_beacon": 3,
+      "minecraft:jump": 7,
+      "minecraft:time_since_death": 22461,
+      "minecraft:drop": 1
+    }
+  },
+  "DataVersion": 4903
+}
