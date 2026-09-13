@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Minecraft dev runtime (created by the mod loader's Gradle plugin)
+run/
+runs/
+logs/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+*.launch
+
+# macOS
+.DS_Store
+
+# Misc
+*.log
+.env
