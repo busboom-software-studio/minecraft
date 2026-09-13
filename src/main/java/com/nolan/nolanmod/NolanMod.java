@@ -1,5 +1,6 @@
 package com.nolan.nolanmod;
 
+import com.nolan.nolanmod.bridge.CommandBridge;
 import com.nolan.nolanmod.city.CityCommand;
 import com.nolan.nolanmod.city.VillagerCityFeature;
 import net.fabricmc.api.ModInitializer;
@@ -42,6 +43,7 @@ public class NolanMod implements ModInitializer {
 			VILLAGER_CITY_PLACED);
 
 		CityCommand.register();
+		CommandBridge.register();
 
 		LOGGER.info("Nolan's Mod loaded: villager cities enabled");
 	}
