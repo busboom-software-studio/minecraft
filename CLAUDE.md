@@ -46,3 +46,13 @@ it as a command within half a second. Output shows in `run/logs/latest.log`.
 Superflat worlds skip biome decoration, so worldgen features never run there. Cities handle
 this with `FlatWorldCities` (chunk-generate event); any future worldgen feature needs the same.
 Ground level in classic superflat is Y=-60.
+
+## More dev bridges
+- Screenshot: `touch run/claude-screenshot` → client saves an F2 screenshot to `run/screenshots/` (newest file). Use this instead of macOS screencapture; the game runs fullscreen in its own Space.
+- Launch straight into a world: `./gradlew runClient -Pworld="New World"`.
+- Clean restart without the player typing anything: `kill -TERM <java pid>` (shutdown hook saves the world), wait for exit, relaunch with `-Pworld`. Never SIGKILL unless the server thread is deadlocked.
+- Worldgen code must never touch the level from inside `ServerChunkEvents.CHUNK_GENERATE`; queue and do it on the next tick (see `FlatWorldCities`).
+
+## City commands
+`/city`, `/city tp [n]`, `/city build [n]`, `/city portals [k]` — see `CityCommand`. Portal blocks
+(`nolanmod:city_portal`, property `city`=n) send the player to the n-th nearest city from the portal.
