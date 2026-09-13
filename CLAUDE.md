@@ -33,3 +33,16 @@ Nolan plays while Claude edits. Keep the client from `runClient` open.
 - Tabs for indentation (matches the Fabric template).
 - One feature per commit. Run `./gradlew build` before committing.
 - New identifiers go through `NolanMod.id("name")`.
+
+## Dev command bridge (run commands in the game from this session)
+While the dev client is running, append a line to `run/claude-commands.txt` and the server runs
+it as a command within half a second. Output shows in `run/logs/latest.log`.
+- Player-targeted commands need `execute as @p at @p run ...` because the source is the server.
+- Use `... run say <text>` to get a yes/no answer into the log (e.g. `execute at @p if block ~ ~-1 ~ minecraft:grass_block run say under: grass`).
+- Player position: `execute as @p at @p run tp @s ~ ~ ~` logs "Teleported ... to x, y, z".
+- Only active in the dev environment (`FabricLoader.isDevelopmentEnvironment()`).
+
+## World types
+Superflat worlds skip biome decoration, so worldgen features never run there. Cities handle
+this with `FlatWorldCities` (chunk-generate event); any future worldgen feature needs the same.
+Ground level in classic superflat is Y=-60.
