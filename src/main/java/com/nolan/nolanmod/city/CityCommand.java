@@ -48,16 +48,43 @@ public final class CityCommand {
 				.then(Commands.argument("nth", IntegerArgumentType.integer(1, 25))
 					.executes(c -> build(c.getSource(), IntegerArgumentType.getInteger(c, "nth")))))
 			.then(Commands.literal("portals")
-				.executes(c -> portals(c.getSource(), 6))
-				.then(Commands.argument("count", IntegerArgumentType.integer(1, CityPortalBlock.MAX_CITY))
-					.executes(c -> portals(c.getSource(), IntegerArgumentType.getInteger(c, "count"))))));
+				.executes(c -> plazaPortals(c.getSource()))
+				.then(Commands.literal("here")
+					.executes(c -> portalsHere(c.getSource(), 6))
+					.then(Commands.argument("count", IntegerArgumentType.integer(1, CityPortalBlock.MAX_CITY))
+						.executes(c -> portalsHere(c.getSource(), IntegerArgumentType.getInteger(c, "count")))))));
+	}
+
+	/** Makes sure the nearest city's plaza has its portal row, and says where it is. */
+	private static int plazaPortals(CommandSourceStack source) {
+		City city = nearest(source, 1);
+		ServerLevel level = source.getLevel();
+		boolean added = ensurePlazaPortals(level, city);
+		int x = city.centerChunkX() * 16 + CityPortals.ROW_X;
+		int z = city.centerChunkZ() * 16 + CityPortals.ROW_Z;
+		source.sendSuccess(() -> Component.literal((added ? "Built the portals" : "The portals are")
+			+ " on the plaza's south edge at X=" + x + " Z=" + z + ". Run /city tp to get there."), false);
+		return 1;
+	}
+
+	/** Builds the plaza portal row if it is missing. Returns true if it had to build it. */
+	static boolean ensurePlazaPortals(ServerLevel level, City city) {
+		int cx = city.centerChunkX();
+		int cz = city.centerChunkZ();
+		level.getChunk(cx, cz);
+		int base = CityPortals.plazaBase(level, cx, cz);
+		if (CityPortals.hasRow(level, cx, cz, base)) {
+			return false;
+		}
+		CityPortals.buildRow(level, cx, cz, base);
+		return true;
 	}
 
 	/**
-	 * Builds a row of portals just north of the player. Portal 1 leads to the nearest city,
-	 * portal 2 to the second nearest, and so on. Each has a sign saying where it goes.
+	 * Builds a row of portals just north of the player, wherever they are. Portal 1 leads to the
+	 * nearest city, portal 2 to the second nearest, and so on.
 	 */
-	private static int portals(CommandSourceStack source, int count) {
+	private static int portalsHere(CommandSourceStack source, int count) {
 		ServerPlayer player = source.getPlayer();
 		if (player == null) {
 			source.sendFailure(Component.literal("Only a player can build portals."));
@@ -65,9 +92,8 @@ public final class CityCommand {
 		}
 		ServerLevel level = source.getLevel();
 		BlockPos feet = player.blockPosition();
-		int frameW = 4;       // outer width of each frame
-		int gap = 1;          // blocks between frames
-		int total = count * frameW + (count - 1) * gap;
+		int gap = 1;
+		int total = count * CityPortals.FRAME_W + (count - 1) * gap;
 		int startX = feet.getX() - total / 2;
 		int z = feet.getZ() - 4;   // a few blocks north of the player
 		int y = feet.getY();
@@ -78,46 +104,28 @@ public final class CityCommand {
 				level.setBlock(new BlockPos(x, y - 1, z + dz), Blocks.POLISHED_ANDESITE.defaultBlockState(), Block.UPDATE_ALL);
 			}
 		}
-
 		for (int i = 0; i < count; i++) {
 			int n = i + 1;
-			int x0 = startX + i * (frameW + gap);
 			BlockState frame = (n == 1 ? Blocks.GOLD_BLOCK : Blocks.IRON_BLOCK).defaultBlockState();
-			BlockState portal = NolanMod.CITY_PORTAL.defaultBlockState().setValue(CityPortalBlock.CITY, n);
-			for (int dx = 0; dx < frameW; dx++) {
-				for (int dy = 0; dy < 5; dy++) {
-					boolean edge = dx == 0 || dx == frameW - 1 || dy == 0 || dy == 4;
-					level.setBlock(new BlockPos(x0 + dx, y + dy, z), edge ? frame : portal, Block.UPDATE_ALL);
-				}
-			}
-			// Sign on the front of the frame's top bar.
-			City city = CityPortalBlock.destination(level, new BlockPos(x0 + 1, y, z), n);
-			BlockPos signPos = new BlockPos(x0 + 1, y + 4, z + 1);
-			level.setBlock(signPos, Blocks.DARK_OAK_WALL_SIGN.defaultBlockState()
-				.setValue(WallSignBlock.FACING, Direction.SOUTH), Block.UPDATE_ALL);
-			if (level.getBlockEntity(signPos) instanceof SignBlockEntity sign) {
-				String palette = city.palette() == CityLayout.Palette.IRON ? "Iron city" : "Copper city";
-				sign.setText(new SignText()
-					.setMessage(0, Component.literal("Portal " + n).withStyle(ChatFormatting.BOLD))
-					.setMessage(1, Component.literal(palette))
-					.setMessage(2, Component.literal("X " + city.centerBlockX()))
-					.setMessage(3, Component.literal("Z " + city.centerBlockZ())), true);
-			}
+			CityPortals.buildFrame(level, startX + i * (CityPortals.FRAME_W + gap), y, z, n, frame, Direction.SOUTH);
 		}
 		int c = count;
-		source.sendSuccess(() -> Component.literal("Built " + c + " city portals. Walk into one!"), false);
+		source.sendSuccess(() -> Component.literal("Built " + c + " city portals at X=" + startX + " Y=" + y + " Z=" + z
+			+ ". Walk into one!"), false);
 		return count;
 	}
 
 	/** Sends a player to a city's plaza, generating it if needed. Shared by /city tp and the portals. */
 	static void teleportToCity(ServerPlayer player, ServerLevel level, City city, int n) {
-		int x = city.centerBlockX() + 3;
-		int z = city.centerBlockZ() + 6;
+		// Arrive on the plaza floor between the tower and the portal row.
+		int x = city.centerBlockX() - 1;
+		int z = city.centerBlockZ() + 4;
 		level.getChunk(x >> 4, z >> 4); // load or generate so the height is known
 		if (FlatWorldCities.isFlatWorld(level)) {
 			// Superflat chunks made before the mod existed have no city; build any missing plots now.
 			buildCity(level, city);
 		}
+		ensurePlazaPortals(level, city); // cities built before portals existed get them on first visit
 		int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
 		player.teleportTo(x + 0.5, y, z + 0.5);
 		String palette = city.palette() == CityLayout.Palette.IRON ? "iron" : "copper";

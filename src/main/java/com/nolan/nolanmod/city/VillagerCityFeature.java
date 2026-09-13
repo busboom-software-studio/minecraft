@@ -368,9 +368,12 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 				.setValue(BellBlock.ATTACHMENT, BellAttachType.FLOOR)
 				.setValue(BellBlock.FACING, Direction.EAST));
 
+			// Portals to the three nearest other cities, along the south edge.
+			CityPortals.buildRow(level, x0 >> 4, z0 >> 4, base);
+
 			spawnGolem(3, 3);
 			spawnGolem(12, 12);
-			spawnVillagers(2, 3, 12, 12, 13);
+			spawnVillagers(2, 3, 12, 11, 12);
 		}
 
 		// ---- pieces ----------------------------------------------------------------------
