@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "nolanmod",
+	"version": "${version}",
+	"name": "Nolan's Mod",
+	"description": "Nolan's custom Minecraft mod.",
+	"authors": [
+		"Nolan",
+		"Eric Busboom"
+	],
+	"contact": {},
+	"license": "MIT",
+	"icon": "assets/nolanmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.nolan.nolanmod.NolanMod"
+		],
+		"client": [
+			"com.nolan.nolanmod.client.NolanModClient"
+		]
+	},
+	"mixins": [
+		"nolanmod.mixins.json",
+		{
+			"config": "nolanmod.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
