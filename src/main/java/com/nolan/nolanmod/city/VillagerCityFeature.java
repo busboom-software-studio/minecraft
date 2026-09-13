@@ -272,8 +272,11 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 						continue;
 					}
 					set(lx, base, lz, farmland);
-					int maxAge = crop == Blocks.BEETROOTS ? 3 : 7;
-					set(lx, base + 1, lz, crop.defaultBlockState().setValue(CropBlock.AGE, random.nextInt(maxAge + 1)));
+					// Beetroots grow in 4 stages, the other crops in 8, and they use different properties.
+					BlockState cropState = crop == Blocks.BEETROOTS
+						? crop.defaultBlockState().setValue(BlockStateProperties.AGE_3, random.nextInt(4))
+						: crop.defaultBlockState().setValue(CropBlock.AGE, random.nextInt(8));
+					set(lx, base + 1, lz, cropState);
 				}
 			}
 			set(FOOT_MIN, base + 1, FOOT_MIN, Blocks.COMPOSTER.defaultBlockState());
