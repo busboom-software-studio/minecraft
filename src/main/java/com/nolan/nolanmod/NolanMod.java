@@ -2,6 +2,7 @@ package com.nolan.nolanmod;
 
 import com.nolan.nolanmod.bridge.CommandBridge;
 import com.nolan.nolanmod.city.CityCommand;
+import com.nolan.nolanmod.city.CityPortalBlock;
 import com.nolan.nolanmod.city.FlatWorldCities;
 import com.nolan.nolanmod.city.VillagerCityFeature;
 import net.fabricmc.api.ModInitializer;
@@ -13,6 +14,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -28,6 +33,17 @@ public class NolanMod implements ModInitializer {
 		BuiltInRegistries.FEATURE, id("villager_city"), new VillagerCityFeature(NoneFeatureConfiguration.CODEC));
 	public static final ResourceKey<PlacedFeature> VILLAGER_CITY_PLACED =
 		ResourceKey.create(Registries.PLACED_FEATURE, id("villager_city"));
+
+	public static final ResourceKey<Block> CITY_PORTAL_KEY = ResourceKey.create(Registries.BLOCK, id("city_portal"));
+	public static final Block CITY_PORTAL = Registry.register(BuiltInRegistries.BLOCK, CITY_PORTAL_KEY,
+		new CityPortalBlock(BlockBehaviour.Properties.of()
+			.setId(CITY_PORTAL_KEY)
+			.noOcclusion()
+			.noLootTable()
+			.strength(-1.0F, 3600000.0F)
+			.lightLevel(state -> 11)
+			.sound(SoundType.GLASS)
+			.pushReaction(PushReaction.BLOCK)));
 
 	@Override
 	public void onInitialize() {
