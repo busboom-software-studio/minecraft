@@ -2,6 +2,7 @@ package com.nolan.nolanmod;
 
 import com.nolan.nolanmod.bridge.CommandBridge;
 import com.nolan.nolanmod.city.CityCommand;
+import com.nolan.nolanmod.city.FlatWorldCities;
 import com.nolan.nolanmod.city.VillagerCityFeature;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -42,6 +43,7 @@ public class NolanMod implements ModInitializer {
 			GenerationStep.Decoration.TOP_LAYER_MODIFICATION,
 			VILLAGER_CITY_PLACED);
 
+		FlatWorldCities.register();
 		CityCommand.register();
 		CommandBridge.register();
 

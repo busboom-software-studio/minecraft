@@ -65,23 +65,26 @@ public final class CityLayout {
 
 	/** The city whose centre is closest to the given chunk. */
 	public static City nearest(long seed, int chunkX, int chunkZ) {
+		return nearest(seed, chunkX, chunkZ, 1);
+	}
+
+	/** The n-th closest city to the given chunk (1 = closest). Looks at the 25 surrounding regions. */
+	public static City nearest(long seed, int chunkX, int chunkZ, int n) {
 		int rx = Math.floorDiv(chunkX, SPACING);
 		int rz = Math.floorDiv(chunkZ, SPACING);
-		City best = null;
-		long bestDist = Long.MAX_VALUE;
-		for (int ox = -1; ox <= 1; ox++) {
-			for (int oz = -1; oz <= 1; oz++) {
-				City c = cityForRegion(seed, rx + ox, rz + oz);
-				long dx = c.centerChunkX() - chunkX;
-				long dz = c.centerChunkZ() - chunkZ;
-				long d = dx * dx + dz * dz;
-				if (d < bestDist) {
-					bestDist = d;
-					best = c;
-				}
+		java.util.List<City> cities = new java.util.ArrayList<>();
+		for (int ox = -2; ox <= 2; ox++) {
+			for (int oz = -2; oz <= 2; oz++) {
+				cities.add(cityForRegion(seed, rx + ox, rz + oz));
 			}
 		}
-		return best;
+		cities.sort(java.util.Comparator.comparingLong(c -> {
+			long dx = c.centerChunkX() - chunkX;
+			long dz = c.centerChunkZ() - chunkZ;
+			return dx * dx + dz * dz;
+		}));
+		int index = Math.max(1, Math.min(n, cities.size())) - 1;
+		return cities.get(index);
 	}
 
 	/** What to build on this chunk of the city. */

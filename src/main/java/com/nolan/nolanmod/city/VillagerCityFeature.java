@@ -53,11 +53,18 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		WorldGenLevel level = context.level();
 		BlockPos origin = context.origin();
-		int chunkX = origin.getX() >> 4;
-		int chunkZ = origin.getZ() >> 4;
+		// During world generation only the *_WG heightmaps exist.
+		return buildPlot(context.level(), origin.getX() >> 4, origin.getZ() >> 4,
+			Heightmap.Types.OCEAN_FLOOR_WG, Heightmap.Types.WORLD_SURFACE_WG);
+	}
 
+	/**
+	 * Builds the city plot for one chunk, if that chunk is part of a city.
+	 * Usable both during world generation and on an already-generated chunk (superflat worlds).
+	 */
+	public static boolean buildPlot(WorldGenLevel level, int chunkX, int chunkZ,
+			Heightmap.Types solidType, Heightmap.Types surfaceType) {
 		City city = CityLayout.cityAt(level.getSeed(), chunkX, chunkZ);
 		if (city == null) {
 			return false;
@@ -65,7 +72,7 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 
 		Plot plot = CityLayout.plotFor(city, chunkX, chunkZ);
 		RandomSource random = RandomSource.create(CityLayout.hash(city.seed(), chunkX, chunkZ, 7));
-		Builder b = new Builder(level, origin.getX(), origin.getZ(), city.palette(), random);
+		Builder b = new Builder(level, chunkX * 16, chunkZ * 16, city.palette(), random, solidType, surfaceType);
 
 		if (!b.surveyTerrain()) {
 			return false;
@@ -90,6 +97,8 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 		private final int z0;
 		private final Palette palette;
 		private final RandomSource random;
+		private final Heightmap.Types solidType;
+		private final Heightmap.Types surfaceType;
 		private final int[][] solidHeight = new int[16][16];
 		private final int[][] surfaceHeight = new int[16][16];
 		/** Street level: the y of the street surface blocks. Building floors are at this y too. */
@@ -101,12 +110,15 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 		private final BlockState roof;
 		private final BlockState roofEdge;
 
-		Builder(WorldGenLevel level, int x0, int z0, Palette palette, RandomSource random) {
+		Builder(WorldGenLevel level, int x0, int z0, Palette palette, RandomSource random,
+				Heightmap.Types solidType, Heightmap.Types surfaceType) {
 			this.level = level;
 			this.x0 = x0;
 			this.z0 = z0;
 			this.palette = palette;
 			this.random = random;
+			this.solidType = solidType;
+			this.surfaceType = surfaceType;
 
 			WeatheringCopper.WeatherState weather = WeatheringCopper.WeatherState.BY_ID.apply(random.nextInt(4));
 			if (palette == Palette.IRON) {
@@ -132,8 +144,8 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 			for (int lx = 0; lx < 16; lx++) {
 				for (int lz = 0; lz < 16; lz++) {
 					// Heightmaps give the y of the first air block above the top block, so subtract 1.
-					solidHeight[lx][lz] = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x0 + lx, z0 + lz) - 1;
-					surfaceHeight[lx][lz] = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x0 + lx, z0 + lz) - 1;
+					solidHeight[lx][lz] = level.getHeight(solidType, x0 + lx, z0 + lz) - 1;
+					surfaceHeight[lx][lz] = level.getHeight(surfaceType, x0 + lx, z0 + lz) - 1;
 				}
 			}
 			int center = solidHeight[8][8];
