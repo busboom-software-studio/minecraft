@@ -61,6 +61,12 @@ public final class CommandBridge {
 			}
 			NolanMod.LOGGER.info("Command bridge running: {}", command);
 			try {
+				if (command.equals("!save")) {
+					// Singleplayer has no /save-all, so save the world directly (flush to disk, force).
+					boolean saved = server.saveEverything(true, true, true);
+					NolanMod.LOGGER.info("Command bridge: world save {}", saved ? "complete" : "FAILED");
+					continue;
+				}
 				server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
 			} catch (Exception e) {
 				NolanMod.LOGGER.error("Command bridge failed on '{}'", command, e);
