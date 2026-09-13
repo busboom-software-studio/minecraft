@@ -58,3 +58,9 @@ Ground level in classic superflat is Y=-60.
 Portal blocks (`nolanmod:city_portal`, property `city`=n) send the player to the n-th nearest city from the
 portal's own chunk. Every plaza has a row of three portals (n=2,3,4; n=1 is the city itself) on its south
 edge, local x 2..13, z 14 (`CityPortals`). `/city tp` lands you between the tower and that row.
+
+## World snapshots
+`worlds/<name>/` holds committed copies of dev worlds. `scripts/save-world.sh [name]` flushes the
+running game via the `!save` bridge line, rsyncs `run/saves/<name>` → `worlds/<name>`, and commits.
+`scripts/restore-world.sh [name]` copies it back (game must be closed; keeps a backup of the old save).
+Snapshots are ~45 MB each; if the repo gets heavy, move `worlds/` to Git LFS.
