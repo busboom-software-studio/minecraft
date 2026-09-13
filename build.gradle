@@ -14,6 +14,15 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
+	runs {
+		client {
+			// `./gradlew runClient -Pworld="New World"` skips the title screen and loads that save.
+			if (project.hasProperty("world")) {
+				programArgs "--quickPlaySingleplayer", project.property("world").toString()
+			}
+		}
+	}
+
 	mods {
 		"nolanmod" {
 			sourceSet sourceSets.main

@@ -7,9 +7,11 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,7 +33,45 @@ public final class CityCommand {
 			.then(Commands.literal("tp")
 				.executes(c -> teleport(c.getSource(), 1))
 				.then(Commands.argument("nth", IntegerArgumentType.integer(1, 25))
-					.executes(c -> teleport(c.getSource(), IntegerArgumentType.getInteger(c, "nth"))))));
+					.executes(c -> teleport(c.getSource(), IntegerArgumentType.getInteger(c, "nth")))))
+			.then(Commands.literal("build")
+				.executes(c -> build(c.getSource(), 1))
+				.then(Commands.argument("nth", IntegerArgumentType.integer(1, 25))
+					.executes(c -> build(c.getSource(), IntegerArgumentType.getInteger(c, "nth"))))));
+	}
+
+	/**
+	 * Builds every plot of the n-th nearest city on top of whatever is there now. For land that
+	 * was generated before the mod existed (or superflat chunks that were missed). Skips plots that
+	 * already have a lamp post, so running it twice does not stack buildings.
+	 */
+	private static int build(CommandSourceStack source, int n) {
+		City city = nearest(source, n);
+		ServerLevel level = source.getLevel();
+		int built = 0;
+		int skipped = 0;
+		for (int dx = -CityLayout.RADIUS; dx <= CityLayout.RADIUS; dx++) {
+			for (int dz = -CityLayout.RADIUS; dz <= CityLayout.RADIUS; dz++) {
+				int chunkX = city.centerChunkX() + dx;
+				int chunkZ = city.centerChunkZ() + dz;
+				level.getChunk(chunkX, chunkZ); // load or generate
+				int lampX = chunkX * 16 + 1;
+				int lampZ = chunkZ * 16 + 1;
+				int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, lampX, lampZ) - 1;
+				if (level.getBlockState(new BlockPos(lampX, top, lampZ)).is(Blocks.SEA_LANTERN)) {
+					skipped++;
+					continue;
+				}
+				if (FlatWorldCities.buildNow(level, chunkX, chunkZ)) {
+					built++;
+				}
+			}
+		}
+		int b = built;
+		int s = skipped;
+		source.sendSuccess(() -> Component.literal("City at X=" + city.centerBlockX() + " Z=" + city.centerBlockZ()
+			+ ": built " + b + " plots, " + s + " already there."), false);
+		return built;
 	}
 
 	private static City nearest(CommandSourceStack source, int n) {

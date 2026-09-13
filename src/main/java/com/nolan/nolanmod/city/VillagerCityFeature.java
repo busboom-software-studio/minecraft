@@ -159,7 +159,7 @@ public class VillagerCityFeature extends Feature<NoneFeatureConfiguration> {
 			samples[i++] = solidHeight[13][13];
 			java.util.Arrays.sort(samples);
 			base = samples[2]; // median
-			base = Math.max(base, level.getMinY() + 8);
+			base = Math.max(base, level.getMinY() + 1);
 			base = Math.min(base, level.getMaxY() - 40);
 			return true;
 		}
