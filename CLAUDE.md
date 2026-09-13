@@ -54,5 +54,7 @@ Ground level in classic superflat is Y=-60.
 - Worldgen code must never touch the level from inside `ServerChunkEvents.CHUNK_GENERATE`; queue and do it on the next tick (see `FlatWorldCities`).
 
 ## City commands
-`/city`, `/city tp [n]`, `/city build [n]`, `/city portals [k]` — see `CityCommand`. Portal blocks
-(`nolanmod:city_portal`, property `city`=n) send the player to the n-th nearest city from the portal.
+`/city`, `/city tp [n]`, `/city build [n]`, `/city portals`, `/city portals here [k]` — see `CityCommand`.
+Portal blocks (`nolanmod:city_portal`, property `city`=n) send the player to the n-th nearest city from the
+portal's own chunk. Every plaza has a row of three portals (n=2,3,4; n=1 is the city itself) on its south
+edge, local x 2..13, z 14 (`CityPortals`). `/city tp` lands you between the tower and that row.
