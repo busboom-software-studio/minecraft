@@ -58,15 +58,15 @@ public final class FlatWorldCities {
 	}
 
 	private static void buildPending(ServerLevel level, LongSet pending) {
-		var it = pending.iterator();
-		while (it.hasNext()) {
-			long key = it.nextLong();
+		// Building a plot can generate neighbouring chunks, which adds to `pending` while we work,
+		// so iterate over a snapshot rather than the live set.
+		for (long key : pending.toLongArray()) {
 			int chunkX = ChunkPos.getX(key);
 			int chunkZ = ChunkPos.getZ(key);
 			if (level.getChunkSource().getChunkNow(chunkX, chunkZ) == null) {
 				continue; // not loaded yet; try again next tick
 			}
-			it.remove();
+			pending.remove(key);
 			buildNow(level, chunkX, chunkZ);
 		}
 	}
