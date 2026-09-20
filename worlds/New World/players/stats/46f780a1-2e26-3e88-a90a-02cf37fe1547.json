@@ -1,0 +1,23 @@
+{
+  "stats": {
+    "minecraft:custom": {
+      "minecraft:time_since_rest": 22153,
+      "minecraft:walk_one_cm": 2867,
+      "minecraft:total_world_time": 22153,
+      "minecraft:fly_one_cm": 1347,
+      "minecraft:play_time": 22153,
+      "minecraft:damage_dealt": 28,
+      "minecraft:jump": 7,
+      "minecraft:time_since_death": 22153
+    },
+    "minecraft:picked_up": {
+      "minecraft:poppy": 2,
+      "minecraft:dandelion": 2,
+      "minecraft:brown_stained_glass": 1
+    },
+    "minecraft:used": {
+      "minecraft:poppy": 15
+    }
+  },
+  "DataVersion": 4903
+}
