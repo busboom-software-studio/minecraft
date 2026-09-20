@@ -1,15 +1,3 @@
-{
-  "stats": {
-    "minecraft:custom": {
-      "minecraft:time_since_rest": 1437,
-      "minecraft:walk_one_cm": 871,
-      "minecraft:total_world_time": 1437,
-      "minecraft:leave_game": 1,
-      "minecraft:fly_one_cm": 408,
-      "minecraft:play_time": 1437,
-      "minecraft:jump": 1,
-      "minecraft:time_since_death": 1437
-    }
-  },
-  "DataVersion": 4903
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:620e49155eb71b70b2918a361dbf117c69904fac5181e11f07e17278947edb35
+size 365

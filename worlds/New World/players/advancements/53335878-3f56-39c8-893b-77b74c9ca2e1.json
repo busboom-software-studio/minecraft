@@ -1,15 +1,3 @@
-{
-  "minecraft:recipes/decorations/crafting_table": {
-    "criteria": {
-      "unlock_right_away": "2026-09-13 15:13:15 -0700"
-    },
-    "done": true
-  },
-  "minecraft:adventure/adventuring_time": {
-    "criteria": {
-      "minecraft:plains": "2026-09-13 15:13:16 -0700"
-    },
-    "done": false
-  },
-  "DataVersion": 4903
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:6c625d8b3a8dbcec9a8fa4376153028a13791fef69b0ef236a6b430b3f8483fd
+size 325

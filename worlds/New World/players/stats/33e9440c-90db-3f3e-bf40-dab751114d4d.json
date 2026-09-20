@@ -1,27 +1,3 @@
-{
-  "stats": {
-    "minecraft:used": {
-      "minecraft:netherite_spear": 8
-    },
-    "minecraft:custom": {
-      "minecraft:sprint_one_cm": 228,
-      "minecraft:open_chest": 1,
-      "minecraft:time_since_rest": 13347,
-      "minecraft:walk_one_cm": 3296,
-      "minecraft:total_world_time": 13347,
-      "minecraft:leave_game": 1,
-      "minecraft:play_time": 13347,
-      "minecraft:damage_dealt": 420,
-      "minecraft:jump": 1,
-      "minecraft:time_since_death": 13347,
-      "minecraft:drop": 1
-    },
-    "minecraft:dropped": {
-      "minecraft:netherite_spear": 1
-    },
-    "minecraft:picked_up": {
-      "minecraft:netherite_spear": 1
-    }
-  },
-  "DataVersion": 4903
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:137a501e2b1cb21fe7604bec7ff1eacad417ad5f98d96c547e71af74923c0945
+size 682
