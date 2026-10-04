@@ -1,0 +1,13 @@
+{
+	"item.nolanmod.prop_plane": "Prop Plane",
+	"item.nolanmod.jet_plane": "Jet",
+	"item.nolanmod.rocket_plane": "Rocket Plane",
+	"entity.nolanmod.plane": "Plane",
+	"key.nolanmod.toggle_click_mode": "Toggle tap-to-place",
+	"item.nolanmod.scout_mech": "Scout Mech",
+	"item.nolanmod.trooper_mech": "Trooper Mech",
+	"item.nolanmod.titan_mech": "Titan Mech",
+	"entity.nolanmod.mech": "Mech",
+	"item.nolanmod.robot": "Nolan's Robot",
+	"entity.nolanmod.robot": "Nolan's Robot"
+}

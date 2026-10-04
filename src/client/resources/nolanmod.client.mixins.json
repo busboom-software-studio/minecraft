@@ -3,7 +3,8 @@
 	"package": "com.nolan.nolanmod.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+		"ExampleClientMixin",
+		"TapToPlaceMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"pattern": [
+		"I I",
+		"IBI",
+		"ILI"
+	],
+	"key": {
+		"I": "minecraft:iron_ingot",
+		"L": "minecraft:lantern",
+		"B": "minecraft:blaze_rod"
+	},
+	"result": {
+		"id": "nolanmod:rocket_plane",
+		"count": 1
+	}
+}

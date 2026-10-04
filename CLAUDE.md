@@ -59,6 +59,30 @@ Portal blocks (`nolanmod:city_portal`, property `city`=n) send the player to the
 portal's own chunk. Every plaza has a row of three portals (n=2,3,4; n=1 is the city itself) on its south
 edge, local x 2..13, z 14 (`CityPortals`). `/city tp` lands you between the tower and that row.
 
+## Turntable (photogrammetry capture)
+`turntable/` drives a Nezha V2 motor on a micro:bit over USB serial, to spin an object in
+front of the camera for photogrammetry. `turntable/README.md` has the details.
+- Drive it: `node turntable/host/dist/cli.js goto 90` (also `pos`, `zero`, `by`, `spin`,
+  `stop`, `sweep <n> --capture`, `calibrate`, `config`). Rebuild the host with
+  `cd turntable/host && npm run build` after editing `host/src`.
+- **Direct drive, absolute encoder, no gear ratio.** The Nezha turns the table 1:1 and knows
+  its absolute angle, so the motor's angle IS the table's bearing — true at power-up, no
+  homing or calibration. `goto` hands the angle to the motor's own position loop. There was
+  a worm gear on this rig once; `gearRatio` in `turntable/turntable.json` stays 1 unless one
+  goes back in.
+- **Keep it slow.** Nothing gears the motor down, so motor speed is table speed. The table
+  turns at about `9 x speed%` degrees/second: 2% is 20 s/rev, 4% is 10 s/rev. Default is 5%.
+  Fast moves blur photos and shift the subject.
+- Firmware changes need `cd turntable/firmware && ./build.sh && ./flash.sh` (~1 min).
+  `build.sh` uses MakeCode's cloud compiler, so it needs a network.
+- Flash with `flash.sh` (pyocd over CMSIS-DAP), not by copying to `/Volumes/MICROBIT`: this
+  session can't see that volume, and a copy to it can wedge in uninterruptible IO that only
+  a replug clears. The MBR/SoftDevice below `0x1C000` are write-protected and must be
+  stripped from the image first — `flash.sh` does that.
+- Moves are closed-loop against the encoder, so errors don't accumulate across a sweep.
+  `sweep` always turns the same way to keep backlash on one side.
+- `--capture` uses the existing camera bridge, which must already be running.
+
 ## World snapshots
 `worlds/<name>/` holds committed copies of dev worlds. `scripts/save-world.sh [name]` flushes the
 running game via the `!save` bridge line, rsyncs `run/saves/<name>` → `worlds/<name>`, and commits.

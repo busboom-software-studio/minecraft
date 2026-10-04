@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"pattern": [
+		"PPP",
+		"OIO",
+		"W W"
+	],
+	"key": {
+		"P": "minecraft:purple_concrete",
+		"O": "minecraft:orange_concrete",
+		"I": "minecraft:iron_block",
+		"W": "minecraft:black_concrete"
+	},
+	"result": {
+		"id": "nolanmod:robot",
+		"count": 1
+	}
+}

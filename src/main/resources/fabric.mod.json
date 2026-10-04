@@ -14,10 +14,18 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.nolan.nolanmod.NolanMod"
+			"com.nolan.nolanmod.NolanMod",
+			"com.nolan.nolanmod.plane.PlaneMod",
+			"com.nolan.nolanmod.daytime.DayTimeMod",
+			"com.nolan.nolanmod.mech.MechMod",
+			"com.nolan.nolanmod.robot.RobotMod"
 		],
 		"client": [
-			"com.nolan.nolanmod.client.NolanModClient"
+			"com.nolan.nolanmod.client.NolanModClient",
+			"com.nolan.nolanmod.client.plane.PlaneClient",
+			"com.nolan.nolanmod.client.clicks.ClickModeClient",
+			"com.nolan.nolanmod.client.mech.MechClient",
+			"com.nolan.nolanmod.client.robot.RobotClient"
 		]
 	},
 	"mixins": [
