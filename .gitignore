@@ -37,3 +37,6 @@ classes/
 
 # Dev command bridge input file (lives in run/, already ignored, listed for clarity)
 run/claude-commands.txt
+# dotconfig — assembled env files contain decrypted secrets
+.env.*
+!.env.example
